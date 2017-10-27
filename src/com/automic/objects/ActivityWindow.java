@@ -198,35 +198,35 @@ public class ActivityWindow extends ObjectTemplate{
 		return array;
 	}
 	
-	public void test(TaskPromptSetNames prptNames, int RunID) throws TimeoutException, IOException{
-		// getting all prompts
-		System.out.println("prpt names size:" + prptNames.size());
-		Iterator<TaskPromptSetName> it0 = prptNames.iterator();
-		while(it0.hasNext()){
-			TaskPromptSetName tName = it0.next();
-			TaskPromptSetContent req = new TaskPromptSetContent(tName, RunID);
-			sendGenericXMLRequestAndWait(req);
-			System.out.println("Type of prptset:" + req.getType());
-			Iterator<PromptElement> it1 = req.iterator();
-			
-			while(it1.hasNext()){
-				PromptElement elmt = it1.next();
-				
-				//DateElement, LabelElement, NumberElement, OnChangeResetElement, RadioGroupElement, TimeElement
-				//LabelElement Lelmt = (LabelElement) elmt;
-				System.out.println("Values: "+elmt.getMessageInsert()+" | "+elmt.getVariable()+" | "+elmt.getValue());
-				elmt.setValue("GAGA");
-			}
-			SubmitPrompt sumbit = new SubmitPrompt(prptNames, req);
-			sendGenericXMLRequestAndWait(sumbit);
-			if(sumbit.getMessageBox() != null){
-				System.out.println(sumbit.getMessageBox().getText());
-			}else{
-				System.out.println("Done?");
-			}
-		}	
-		
-	}
+//	public void test(TaskPromptSetNames prptNames, int RunID) throws TimeoutException, IOException{
+//		// getting all prompts
+//		System.out.println("prpt names size:" + prptNames.size());
+//		Iterator<TaskPromptSetName> it0 = prptNames.iterator();
+//		while(it0.hasNext()){
+//			TaskPromptSetName tName = it0.next();
+//			TaskPromptSetContent req = new TaskPromptSetContent(tName, RunID);
+//			sendGenericXMLRequestAndWait(req);
+//			System.out.println("Type of prptset:" + req.getType());
+//			Iterator<PromptElement> it1 = req.iterator();
+//			
+//			while(it1.hasNext()){
+//				PromptElement elmt = it1.next();
+//				
+//				//DateElement, LabelElement, NumberElement, OnChangeResetElement, RadioGroupElement, TimeElement
+//				//LabelElement Lelmt = (LabelElement) elmt;
+//				System.out.println("Values: "+elmt.getMessageInsert()+" | "+elmt.getVariable()+" | "+elmt.getValue());
+//				elmt.setValue("hello");
+//			}
+//			SubmitPrompt sumbit = new SubmitPrompt(prptNames, req);
+//			sendGenericXMLRequestAndWait(sumbit);
+//			if(sumbit.getMessageBox() != null){
+//				System.out.println(sumbit.getMessageBox().getText());
+//			}else{
+//				System.out.println("Done?");
+//			}
+//		}	
+//		
+//	}
 	
 	public void showPromptSetContent(TaskPromptSetNames prptNames, int RunID) throws TimeoutException, IOException{
 		// getting all prompts
