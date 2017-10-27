@@ -591,7 +591,7 @@ public class Common extends ObjectTemplate{
 		
 		sendGenericXMLRequestAndWait(req);
 		if(req.getMessageBox() == null){
-			Say(Utils.getSuccessString(" \t ++ Object: "+name+" Successfully deleted. "));
+			Say(Utils.getSuccessString(" \tObject: "+name+" Successfully deleted. "));
 			return true;
 		}
 		if (req.getMessageBox().getNumber() == 4006507) {  //cannot delete because task is active

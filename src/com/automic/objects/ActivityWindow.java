@@ -41,6 +41,32 @@ public class ActivityWindow extends ObjectTemplate{
 		return new ObjectBroker(this.connection,true);
 	}
 	
+	public int[] getRunidsFromTasks(List<Task> list) {
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		for(int i=0;i<list.size();i++) {
+			int RunID = list.get(i).getRunID();
+			arr.add(RunID);
+		}
+
+		   int[] ret = new int[arr.size()];
+		    for (int i=0; i < ret.length; i++)
+		    {
+		        ret[i] = arr.get(i).intValue();
+		    }
+		    return ret;
+		    
+	}
+	
+	
+	public List<Task> getActivityWindowContentForObject(String ObjectName) throws IOException {
+		TaskFilter taskFilter= new TaskFilter();
+		taskFilter.selectAllObjects();
+		taskFilter.selectAllPlatforms();
+		//taskFilter.setStatus("ANY_ACTIVE");
+		taskFilter.setObjectName(ObjectName);
+		return getActivityWindowContent(taskFilter);
+	}
+	
 	// return the content of the activity window
 	public List<Task> getActivityWindowContent(TaskFilter taskFilter) throws IOException {		
 		if(taskFilter !=null){
@@ -117,6 +143,19 @@ public class ActivityWindow extends ObjectTemplate{
 		
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Task "+ RunID +" Deactivated."));
+			return true;
+		}else{
+			//Say(Utils.getErrorString("Error:"  + req.getMessageBox().getText()));
+		}
+		return false;
+	}
+	
+	public boolean deactivateTask(int[] RunIDs, boolean force) throws IOException {		
+		DeactivateTask req = new DeactivateTask(RunIDs, force); // force
+		sendGenericXMLRequestAndWait(req);
+		
+		if (req.getMessageBox() == null) {
+			Say(Utils.getSuccessString("Tasks"+" Deactivated."));
 			return true;
 		}else{
 			//Say(Utils.getErrorString("Error:"  + req.getMessageBox().getText()));
