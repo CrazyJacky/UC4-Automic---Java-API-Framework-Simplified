@@ -1,5 +1,8 @@
 package com.automic.utils;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import com.uc4.api.MessageBox;
 import com.uc4.api.Template;
 
@@ -61,5 +64,27 @@ public class Utils {
 	}
 	public static void displaySuccessString(String s) {
 		System.out.println(getSuccessString(s));
+	}
+	
+	public static String getRandomHexString(int numchars){
+        Random r = new Random();
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < numchars){
+            sb.append(Integer.toHexString(r.nextInt()));
+        }
+
+        return sb.toString().substring(0, numchars);
+    }
+	
+	public static String getXMLfromValuesForIAVARA(String attrkey, String description, String type) {
+		// ex: 		<event_attributes><description>success field</description><key>success</key><type>BOOLEAN</type></event_attributes>
+		String xmloutput = "";
+		String[] IAInputTypes = {"BOOLEAN", "STRING","NUMBER"};
+		String TYPE = type.toUpperCase();
+		if(Arrays.asList(IAInputTypes).contains(TYPE)){
+			xmloutput = "<event_attributes><description>";
+			xmloutput = xmloutput + description + "</description><key>"+attrkey+"</key><type>"+TYPE+"</type></event_attributes>";
+		}
+		return xmloutput;
 	}
 }

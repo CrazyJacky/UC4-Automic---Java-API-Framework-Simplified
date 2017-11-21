@@ -251,8 +251,10 @@ public class Common extends ObjectTemplate{
 		if (req1.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object "+ SourceObjectName +" Successfully Replaced by: "+TargetObjectName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
+			return false;
 		}
-		return false;
 	}
 	
 	// Rename an object
@@ -268,8 +270,10 @@ public class Common extends ObjectTemplate{
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object: "+ SourceObjectName +" Successfully Renamed to: "+TargetObjectName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
+			return false;
 		}
-		return false;
 
 	}
 	
@@ -285,9 +289,10 @@ public class Common extends ObjectTemplate{
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object: "+ SourceObjectName +" Successfully Renamed to: "+TargetObjectName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
+			return false;
 		}
-		return false;
-
 	}
 	
 	// Rename a Folder
@@ -300,8 +305,10 @@ public class Common extends ObjectTemplate{
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object: "+ sourceFolder.fullPath() +" Successfully Renamed to: "+targetName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
+			return false;
 		}
-		return false;
 	}
 	
 	// Rename a Folder
@@ -312,8 +319,11 @@ public class Common extends ObjectTemplate{
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object: "+ SourceFolder.fullPath() +" Successfully Renamed to: "+targetName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
+			return false;
 		}
-		return false;
+	
 	}
 	
 	// the method below can potentially do a lot of harm - use with caution!
@@ -346,14 +356,15 @@ public class Common extends ObjectTemplate{
 			req.setAbortIfNameExists(AbortIfNameExistsMode.ALWAYS);
 			// adding this now temporarily?
 			//req.setIncludeFolderNames(IncludeFolderNamesMode.NONE);
-			
 			sendGenericXMLRequestAndWait(req);
 			if (req.getMessageBox() == null) {
-				Say(Utils.getSuccessString("Object(s) with Pattern: "+ExistingPatternName+" Successfully renamed to Pattern: "+NewPatternName));
-				
+				System.out.println(Utils.getSuccessString("Object(s) with Pattern: "+ExistingPatternName+" Successfully renamed to Pattern: "+NewPatternName));
 				return true;
+			}else {
+				Say(Utils.getErrorString(req.getMessageBox().getText()));
+				return false;
 			}
-			return false;
+	
 	}
 	
 	public boolean deepRenameObjects(String ExistingPatternName, String NewPatternName, String abortIfNameExistMode, String includeFolderNamesMode) throws IOException{
@@ -381,6 +392,8 @@ public class Common extends ObjectTemplate{
 		if (req.getMessageBox() == null) {
 			Say(Utils.getSuccessString("Object(s) with Pattern: "+ExistingPatternName+" Successfully renamed to Pattern: "+NewPatternName));
 			return true;
+		}else {
+			Say(Utils.getErrorString(req.getMessageBox().getText()));
 		}
 		return false;
 }
