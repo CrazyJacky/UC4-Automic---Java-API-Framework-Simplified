@@ -55,6 +55,7 @@ public class Calendars extends ObjectTemplate{
 		ArrayList<CalendarKeyword> al = new ArrayList<CalendarKeyword>();
 		while(it.hasNext()){
 			CalendarKeyword kw = it.next();
+			
 			al.add(kw);
 		}
 		return al;

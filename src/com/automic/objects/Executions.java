@@ -14,12 +14,15 @@ import java.util.concurrent.TimeoutException;
 import com.automic.utils.ReportTypeEnum;
 import com.automic.utils.Utils;
 import com.uc4.api.DateTime;
+import com.uc4.api.StatisticSearchItem;
 import com.uc4.api.UC4ObjectName;
 import com.uc4.api.UC4TimezoneName;
 import com.uc4.api.objects.ExecuteRecurring;
 import com.uc4.communication.Connection;
+import com.uc4.communication.requests.ActivatorStatistics;
 import com.uc4.communication.requests.AddComment;
 import com.uc4.communication.requests.GetComments;
+import com.uc4.communication.requests.JobPlanMonitor;
 import com.uc4.communication.requests.GetComments.Comment;
 import com.uc4.communication.requests.CancelTask;
 import com.uc4.communication.requests.ExecuteObject;
@@ -396,5 +399,56 @@ public class Executions extends ObjectTemplate{
 		
 		return AllPages;
 	}
+	public StatisticSearchItem getParentStatistic(int runid) throws com.uc4.communication.TimeoutException, IOException {
+		ActivatorStatistics as = new ActivatorStatistics(runid);
+		sendGenericXMLRequestAndWait(as);
+		StatisticSearchItem item  = as.getResult();
+		return item;
+	}
 	
+	public StatisticSearchItem getParentStatisticWithDegree(int runid,int parentdegree) throws com.uc4.communication.TimeoutException, IOException {
+		int TempRunid = runid;
+		StatisticSearchItem item = null;
+		for(int i =0;i<parentdegree;i++) {
+			ActivatorStatistics as = new ActivatorStatistics(TempRunid);
+			sendGenericXMLRequestAndWait(as);
+			item  = as.getResult();
+			TempRunid = item.getRunID();
+		}
+
+		return item;
+	}
+	
+	public ArrayList<Integer> GetRUNIDsTopWorkflow(int runid) throws com.uc4.communication.TimeoutException, IOException{
+		
+		ArrayList<Integer> myArr = new ArrayList<Integer>();
+		
+		JobPlanMonitor jpm = new JobPlanMonitor(runid,true);
+		sendGenericXMLRequestAndWait(jpm);
+		Iterator<com.uc4.communication.requests.JobPlanMonitor.Task> it0 = jpm.iterator();
+		while(it0.hasNext()) {
+			com.uc4.communication.requests.JobPlanMonitor.Task tsk = it0.next();
+			if(tsk.getRunID()!=-1) {
+			myArr.add(tsk.getRunID());
+			
+			}
+		}
+		return myArr;
+	}
+	
+	public ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task> GetRunsFromTopWorkflow(int runid) throws com.uc4.communication.TimeoutException, IOException{
+		
+		ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task> myArr = new ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task>();
+		
+		JobPlanMonitor jpm = new JobPlanMonitor(runid,true);
+		sendGenericXMLRequestAndWait(jpm);
+		Iterator<com.uc4.communication.requests.JobPlanMonitor.Task> it0 = jpm.iterator();
+		while(it0.hasNext()) {
+			com.uc4.communication.requests.JobPlanMonitor.Task tsk = it0.next();
+			if(!tsk.getName().equals("START") && !tsk.getName().equals("END")) {
+				myArr.add(tsk);
+			}
+		}
+		return myArr;
+	}
 }

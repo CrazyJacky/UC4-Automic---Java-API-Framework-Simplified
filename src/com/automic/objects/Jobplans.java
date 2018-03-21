@@ -12,7 +12,9 @@ import com.uc4.api.objects.IFolder;
 import com.uc4.api.objects.Job;
 import com.uc4.api.objects.JobPlan;
 import com.uc4.api.objects.JobPlanTask;
+import com.uc4.api.objects.PromptSetDefinition;
 import com.uc4.api.objects.TaskState;
+import com.uc4.api.objects.TaskValues;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.api.objects.WorkflowIF;
 import com.uc4.api.objects.WorkflowLoop;
@@ -156,13 +158,21 @@ private ObjectBroker broker;
 		jobPlan.addTask(task6);
 		
 		// Adding the dependencies between jobs, END and START points
-		taskEnd.dependencies().addDependency(task6, TaskState.ANY_ABEND);
-		task1.dependencies().addDependency(taskStart, TaskState.ANY_OK);
-		task6.dependencies().addDependency(task5, TaskState.ENDED_ESCALATED);
-		task5.dependencies().addDependency(task4, TaskState.ANY_ABEND);
-		task4.dependencies().addDependency(task3, TaskState.ANY_OK);
-		task3.dependencies().addDependency(task2, TaskState.ANY_OK);
-		task2.dependencies().addDependency(task1, TaskState.ANY_OK);
+		addDependency(taskEnd,task6,TaskState.ANY_ABEND);
+		addDependency(task1,taskStart,TaskState.ANY_OK);
+		addDependency(task6,task5,TaskState.ENDED_ESCALATED);
+		addDependency(task5,task4,TaskState.ANY_ABEND);
+		addDependency(task4,task3,TaskState.ANY_OK);
+		addDependency(task3,task2,TaskState.ANY_OK);
+		addDependency(task2,task1,TaskState.ANY_OK);
+
+		//taskEnd.dependencies().addDependency(task6, TaskState.ANY_ABEND);
+		//task1.dependencies().addDependency(taskStart, TaskState.ANY_OK);
+		//task6.dependencies().addDependency(task5, TaskState.ENDED_ESCALATED);
+		//task5.dependencies().addDependency(task4, TaskState.ANY_ABEND);
+		//task4.dependencies().addDependency(task3, TaskState.ANY_OK);
+		//task3.dependencies().addDependency(task2, TaskState.ANY_OK);
+		//task2.dependencies().addDependency(task1, TaskState.ANY_OK);
 		
 		// Formatting the layout of the Job Plan (you may use the jobPlan.format() method instead)
 		jobPlan.getStartTask().setX(1);
@@ -181,7 +191,11 @@ private ObjectBroker broker;
 		broker.common.closeObject(jobPlan);
 	}
 	
-	private void setXY(JobPlanTask task, int X, int Y){
+	public void addDependency(JobPlanTask TaskFrom, JobPlanTask TaskTo, TaskState TskState) {
+		TaskTo.dependencies().addDependency(TaskFrom, TskState);
+	}
+	
+	public void setXY(JobPlanTask task, int X, int Y){
 		task.setX(X);
 		task.setY(Y);
 	}
@@ -265,5 +279,49 @@ private ObjectBroker broker;
 		broker.common.saveObject(jobPlan);		
 		broker.common.closeObject(jobPlan);
 	}	
+	
+	public void showPromptValues(JobPlanTask tsk) {
+		TaskValues tskvalues = tsk.values();
+		Iterator<PromptSetDefinition> prptIt = tskvalues.promptSetIterator();
+		while(prptIt.hasNext()) {
+			PromptSetDefinition def = prptIt.next();
+			String[] AllVariableNames = def.getElementIDs();
+			for(int j=0;j<AllVariableNames.length;j++) {
+				String Value = def.getValue(AllVariableNames[j]);
+				System.out.println("\t\t\t Prompt Value: ["+def.getName().getName()+" | "+ AllVariableNames[j] + " | " + Value+"]");
+			}
+			
+			
+		}
+	}
+	
+	public boolean setPromptValues(JobPlanTask tsk, String Promptname, String VariableName, String NewValue) {
+		boolean VarFound = false;
+		boolean PromptFound = false;
+			TaskValues tskvalues = tsk.values();
+			Iterator<PromptSetDefinition> prptIt = tskvalues.promptSetIterator();
+			ArrayList<String> PromptsetList = new ArrayList<String>();
+			
+			while(prptIt.hasNext()) {
+				
+				PromptSetDefinition def = prptIt.next();
+				PromptsetList.add(def.getName().getName());
+				if(Promptname.equalsIgnoreCase(def.getName().getName())) {
+					PromptFound = true;
+					
+					String[] AllVariableNames = def.getElementIDs();
+					for(int j=0;j<AllVariableNames.length;j++) {
+						//String Value = def.getValue(AllVariableNames[j]);
+						if(AllVariableNames[j].equals(VariableName)) {
+							def.setValue(VariableName, NewValue);
+							VarFound = true;
+						}
+					}
+				}
+			}
+			if(!PromptFound) {System.out.println("\t %% No PromptSet Match Found: List of Prompts Found in Object: "+ PromptsetList);	}
+		
+		return VarFound;
+	}
 	
 }

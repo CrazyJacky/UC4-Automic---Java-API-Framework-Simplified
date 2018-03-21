@@ -230,6 +230,8 @@ public class ActivityWindow extends ObjectTemplate{
 	
 	public void showPromptSetContent(TaskPromptSetNames prptNames, int RunID) throws TimeoutException, IOException{
 		// getting all prompts
+		
+		
 		Iterator<TaskPromptSetName> it0 = prptNames.iterator();
 		while(it0.hasNext()){
 			TaskPromptSetName tName = it0.next();
