@@ -10,7 +10,13 @@ import com.uc4.api.DateTime;
 import com.uc4.api.SearchResultItem;
 import com.uc4.api.StatisticSearchItem;
 import com.uc4.api.UC4ObjectName;
+import com.uc4.api.objects.ConsoleEvent;
+import com.uc4.api.objects.DatabaseEvent;
+import com.uc4.api.objects.EstimatedRuntime;
+import com.uc4.api.objects.FileEvent;
+import com.uc4.api.objects.Job;
 import com.uc4.api.objects.Login;
+import com.uc4.api.objects.TimeEvent;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.communication.Connection;
 import com.uc4.communication.TimeoutException;
@@ -189,6 +195,69 @@ public void setGenericStatisticsPlatformFilter(GenericStatistics req, String Pla
 				return Integer.parseInt(processed);
 			}			
 			return req.size();			
+		}
+		
+		public EstimatedRuntime getERT(UC4Object obj) {
+			switch (obj.getType()){
+			case "EVNT_DB": return ((DatabaseEvent) obj).runtime().estimatedRuntime();
+			case "EVNT_CONS":return ((ConsoleEvent) obj).runtime().estimatedRuntime();
+			case "EVNT_TIME":return ((TimeEvent) obj).runtime().estimatedRuntime();
+			case "EVNT_FILE":return ((FileEvent) obj).runtime().estimatedRuntime();
+
+			case "CALL_STANDARD":
+			case "CALL_MAIL":
+			case "CALL_ALARM":
+			case "CALL": return ((com.uc4.api.objects.Notification) obj).runtime().estimatedRuntime();
+			
+			case "JOBF": return ((com.uc4.api.objects.FileTransfer) obj).runtime().estimatedRuntime();
+			
+//			case "JOBP_IF": return ((com.uc4.api.objects.WorkflowIF) obj).attributes().runtime().estimatedRuntime();break;
+//			case "JOBP_FOREACH": return ((com.uc4.api.objects.WorkflowLoop) obj).attributes().runtime().estimatedRuntime();break;
+			// JOBP is returned for all Jobflow types, we therefore need to get the class type first
+			case "JOBP":  
+				if(obj.getClass().getSimpleName().equals("WorkflowLoop")){
+					return ((com.uc4.api.objects.WorkflowLoop) obj).runtime().estimatedRuntime();
+				}
+				if(obj.getClass().getSimpleName().equals("WorkflowIF")){
+					return ((com.uc4.api.objects.WorkflowIF) obj).runtime().estimatedRuntime();
+				}
+				if(obj.getClass().getSimpleName().equals("JobPlan")){
+					return ((com.uc4.api.objects.JobPlan) obj).runtime().estimatedRuntime();
+				}
+				break;
+			//case "JOBQ_PS_PROCESSREQUEST": return ((com.uc4.api.objects.PSRemoteTaskManager) obj).attributes().runtime().estimatedRuntime();break;
+			//case "JOBQ_R3_ALL_JOBS": return ((com.uc4.api.objects.) obj).attributes().runtime().estimatedRuntime();break;
+			//case "JOBQ_R3_INTERCEPTED_JOBS": return ((FileEvent) obj).attributes().runtime().estimatedRuntime();break;
+			//case "JOBQ_R3_JAVA_JOBS": return ((FileEvent) obj).attributes().runtime().estimatedRuntime();break;
+			case "JOBS_BS2000":
+			case "JOBS_GCOS8":
+			case "JOBS_JMX":
+			case "JOBS_MPE":
+			case "JOBS_NSK":
+			case "JOBS_OA":
+			case "JOBS_OS390":
+			case "JOBS_OS400":
+			case "JOBS_PS":
+			case "JOBS_SAP_ABAP":
+			case "JOBS_SAP_JAVA":
+			case "JOBS_SAP_PI":
+			case "JOBS_SIEBEL":
+			case "JOBS_SQL":
+			case "JOBS_UNIX":
+			case "JOBS_VMS":
+			case "JOBS_WIN":
+			case "JOBS_CIT":
+			case "JOBS_WINDOWS":
+			case "JOBS_GENERIC": return ((com.uc4.api.objects.Job) obj).runtime().estimatedRuntime();
+			case "JSCH": return ((com.uc4.api.objects.Schedule) obj).runtime().estimatedRuntime();
+			case "SCRI": return ((com.uc4.api.objects.Script) obj).runtime().estimatedRuntime();
+
+			default:
+				System.out.println(Utils.getWarningString(" -- Operation not supported for type: "+obj.getType()));
+				return null;
+	
+			}
+			return null;
 		}
 	
 }
