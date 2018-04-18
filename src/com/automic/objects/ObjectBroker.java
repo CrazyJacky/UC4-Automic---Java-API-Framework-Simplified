@@ -66,7 +66,7 @@ public class ObjectBroker {
 		queues = new Queues(this.connection,verbose);
 		scripts = new Scripts(this.connection,verbose);
 		usergroups = new Usergroups(this.connection,verbose);
-		variables = new Variables(this.connection,verbose);
+		variables = new Variables(this.connection,verbose); 
 		clients = new Clients(this.connection,verbose);
 		fileTransfers = new FileTransfers(this.connection,verbose);
 		agents = new Agents(this.connection,verbose);

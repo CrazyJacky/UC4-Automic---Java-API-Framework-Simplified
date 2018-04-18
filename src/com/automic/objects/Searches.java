@@ -306,6 +306,7 @@ private ObjectBroker broker;
 			if("JOBP".matches(ObjectTypes)){ser.setTypeJOBP(true);}
 			if("CALE".matches(ObjectTypes)){ser.setTypeCALE(true);}
 			if("CALL".matches(ObjectTypes)){ser.setTypeCALL(true);}
+			if("EVNT".matches(ObjectTypes)){ser.setTypeEVNT(true);}
 			if("CITC".matches(ObjectTypes)){ser.setTypeCITC(true);}
 			if("CLNT".matches(ObjectTypes)){ser.setTypeCLNT(true);}
 			if("CODE".matches(ObjectTypes)){ser.setTypeCODE(true);}
