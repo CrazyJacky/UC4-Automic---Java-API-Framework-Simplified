@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.automic.utils.Utils;
+import com.uc4.api.InvalidUC4NameException;
 import com.uc4.communication.Connection;
 import com.uc4.communication.ConnectionAttributes;
 import com.uc4.communication.IResponseHandler;
@@ -39,12 +40,38 @@ public class ObjectTemplate implements IResponseHandler{
 			
 		}
 		
+		public XMLRequest sendGenericXMLRequestAndWait(XMLRequest req, String name, String type) throws TimeoutException, IOException{
+			if(!verbose){return sendGenericXMLRequestAndWait(req,false,name,type);}
+			else{return sendGenericXMLRequestAndWait(req,true,name,type);}
+			
+		}
+		
+		public XMLRequest sendGenericXMLRequestAndWait(XMLRequest req,boolean showResponse, String name, String type) throws TimeoutException, IOException{
+			
+			try {
+				connection.sendRequestAndWait(req);
+				if (req.getMessageBox() != null) {
+					if(showResponse){Utils.displayErrorString(Utils.getErrorString(req.getMessageBox()));}
+					return null;
+				}
+			}catch(InvalidUC4NameException e) {
+				Utils.displayWarningString("Error Found for Object (UC4NameException): ["+name +"|"+type + "]");
+			}
+			//Utils.displayInfoString("Valid UC4Name for: "+name +"|"+type);
+			return req;
+		}
+		
 		// Sends a generic XMLRequest to the engine with or without showing the response
 		public XMLRequest sendGenericXMLRequestAndWait(XMLRequest req,boolean showResponse) throws TimeoutException, IOException{
-			connection.sendRequestAndWait(req);
-			if (req.getMessageBox() != null) {
-				if(showResponse){System.out.println(Utils.getErrorString(req.getMessageBox()));}
-				return null;
+			
+			try {
+				connection.sendRequestAndWait(req);
+				if (req.getMessageBox() != null) {
+					if(showResponse){System.out.println(Utils.getErrorString(req.getMessageBox()));}
+					return null;
+				}
+			}catch(InvalidUC4NameException e) {
+				//Utils.displayErrorString("Invalid UC4Name Exception.");
 			}
 			return req;
 		}

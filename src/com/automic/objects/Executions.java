@@ -439,15 +439,21 @@ public class Executions extends ObjectTemplate{
 	public ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task> GetRunsFromTopWorkflow(int runid) throws com.uc4.communication.TimeoutException, IOException{
 		
 		ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task> myArr = new ArrayList<com.uc4.communication.requests.JobPlanMonitor.Task>();
-		
+
 		JobPlanMonitor jpm = new JobPlanMonitor(runid,true);
 		sendGenericXMLRequestAndWait(jpm);
-		Iterator<com.uc4.communication.requests.JobPlanMonitor.Task> it0 = jpm.iterator();
-		while(it0.hasNext()) {
-			com.uc4.communication.requests.JobPlanMonitor.Task tsk = it0.next();
-			if(!tsk.getName().equals("START") && !tsk.getName().equals("END")) {
-				myArr.add(tsk);
+		
+		if(jpm.size() > 0) {
+			
+			
+			Iterator<com.uc4.communication.requests.JobPlanMonitor.Task> it0 = jpm.iterator();
+			while(it0.hasNext()) {
+				com.uc4.communication.requests.JobPlanMonitor.Task tsk = it0.next();
+				if(!tsk.getName().equals("START") && !tsk.getName().equals("END")) {
+					myArr.add(tsk);
+				}
 			}
+			//return myArr;
 		}
 		return myArr;
 	}

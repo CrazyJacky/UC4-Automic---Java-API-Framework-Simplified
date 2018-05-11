@@ -39,6 +39,8 @@ public class AECredentials {
 		this.AEMessageLanguage = AEMessageLanguage;
 		this.isSSO = false;
 		
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
+		
 		FinalPortCollection.add(AECPPort);
 		HashMap<String,ArrayList<Integer>> tempHash = new HashMap<String,ArrayList<Integer>>();
 		tempHash.put(AEHostnameOrIp, this.FinalPortCollection);
@@ -59,6 +61,8 @@ public class AECredentials {
 		this.AEUserPassword = AEUserPassword;
 		this.AEMessageLanguage = AEMessageLanguage;
 		this.isSSO = false;
+		
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
 		
 		String[] PortsArray = PortList.replace("\\[", "").replace("\\]", "").trim().split(",");
 		for(int i=0;i<PortsArray.length;i++){
@@ -81,6 +85,9 @@ public class AECredentials {
 		this.isSSO = false;
 		//this.HostPortMap = HostPortMap;
 		this.HostPortMap=HostPortMap;
+		
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
+		
 	}
 	
 	// for SSO
@@ -94,6 +101,8 @@ public class AECredentials {
 		this.isSSO = true;
 		//this.HostPortMap = HostPortMap;
 		this.HostPortMap=HostPortMap;
+		
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
 	}
 	
 	/**
@@ -113,6 +122,8 @@ public class AECredentials {
 		this.isSSO = true;
 		FinalPortCollection.add(AECPPort);
 		
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
+		
 		HashMap<String,ArrayList<Integer>> tempHash = new HashMap<String,ArrayList<Integer>>();
 		tempHash.put(AEHostnameOrIp, this.FinalPortCollection);
 		this.HostPortMap.put(DEFAULTCONNECTIONNAME,tempHash);
@@ -131,6 +142,7 @@ public class AECredentials {
 		this.AEUserLogin = "";
 		this.AEUserPassword = "";
 		this.AEMessageLanguage = AEMessageLanguage;
+		if(AEDepartment.equals("")) {this.AEDepartment = null;}
 		this.isSSO = true;
 		String[] PortsArray = PortList.replace("[", "").replace("]", "").split(",");
 		for(int i=0;i<PortsArray.length;i++){

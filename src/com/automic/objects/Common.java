@@ -464,23 +464,40 @@ public class Common extends ObjectTemplate{
 			}
 			return null;
 		}
-//	
-//	// Open an Automic Object (of any kind)
-//	public UC4Object openObject(String name, boolean readOnly) throws IOException {
-//		//Say(" \t ++ Opening object: "+name);
-//		UC4ObjectName objName = null;
-//		if (name.indexOf('/') != -1) objName = new UC4UserName(name);
-//		else if (name.indexOf('-')  != -1) objName = new UC4HostName(name);
-//		else objName = new UC4ObjectName(name);		
-//
-//		OpenObject req = new OpenObject(objName,readOnly,true);
-//		
-//		sendGenericXMLRequestAndWait(req);
-//		if (req.getMessageBox() == null) {
-//			return req.getUC4Object();
-//		}
-//		return null;
-//	}
+		
+		// Open an Automic Object (of any kind)
+				public UC4Object openObject(String name, String type, boolean readOnly) throws IOException {
+					
+					UC4ObjectName objName = null;
+					//System.out.println("DEBUG:"+type);
+
+					if (type.equalsIgnoreCase("USER") || type.equalsIgnoreCase("USRG")){
+						objName = new UC4UserName(name);
+					}
+					
+					if(type.equalsIgnoreCase("TZ")){
+						objName = new UC4TimezoneName(name);
+					}
+					
+					if(type.equalsIgnoreCase("HOST")){
+						objName = new UC4HostName(name);
+					}
+					else {
+						objName = new UC4ObjectName(name);
+					}
+					
+					OpenObject req = new OpenObject(objName,readOnly,true);
+					
+					//sendGenericXMLRequestAndWait(req);
+					sendGenericXMLRequestAndWait(req,name,type);
+					if (req.getMessageBox() == null) {
+						return req.getUC4Object();
+					}else{
+						Utils.displayErrorString(req.getMessageBox().getText());
+					}
+					return null;
+				}
+
 	
 	// Save an Automic Object (of any kind)
 	public boolean saveObject(UC4Object obj) throws IOException {
