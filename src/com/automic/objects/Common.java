@@ -15,8 +15,21 @@ import com.uc4.api.UC4HostName;
 import com.uc4.api.UC4ObjectName;
 import com.uc4.api.UC4TimezoneName;
 import com.uc4.api.UC4UserName;
+import com.uc4.api.objects.ConsoleEvent;
+import com.uc4.api.objects.DatabaseEvent;
+import com.uc4.api.objects.FileEvent;
+import com.uc4.api.objects.FileTransfer;
+import com.uc4.api.objects.Group;
 import com.uc4.api.objects.IFolder;
+import com.uc4.api.objects.Job;
+import com.uc4.api.objects.JobPlan;
+import com.uc4.api.objects.Notification;
+import com.uc4.api.objects.Schedule;
+import com.uc4.api.objects.Script;
+import com.uc4.api.objects.TimeEvent;
 import com.uc4.api.objects.UC4Object;
+import com.uc4.api.objects.WorkflowIF;
+import com.uc4.api.objects.WorkflowLoop;
 import com.uc4.communication.Connection;
 import com.uc4.communication.TimeoutException;
 import com.uc4.communication.TraceListener;
@@ -718,6 +731,90 @@ public class Common extends ObjectTemplate{
 	public TemplateList getTemplateList() throws TimeoutException, IOException{
 		TemplateList req = new TemplateList();
 		return (TemplateList) sendGenericXMLRequestAndWait(req);
+	}
+
+	public boolean isObjectActive(String ObjectName) throws IOException {
+		ObjectBroker broker = getBrokerInstance();
+		UC4Object object = broker.common.openObject(ObjectName, true);
+		
+		if(object.getType().startsWith("JOBS")) {Job obj = (Job)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("JOBP")) {
+			try {
+				JobPlan obj = (JobPlan)object;
+				if(obj.header().isActive()){return true;}
+				if(!obj.header().isActive()){return false;}
+			}catch (ClassCastException e0) {
+				try {
+					WorkflowLoop obj = (WorkflowLoop)object;
+					if(obj.header().isActive()){return true;}
+					if(!obj.header().isActive()){return false;}
+				}catch (ClassCastException e1) {
+						WorkflowIF obj = (WorkflowIF)object;
+						if(obj.header().isActive()){return true;}
+						if(!obj.header().isActive()){return false;}
+				}
+			}
+		}
+		
+		if(object.getType().startsWith("SCRI")) {
+			Script obj = (Script)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("JOBF")) {
+			FileTransfer obj = (FileTransfer)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("JOBG")) {
+			Group obj = (Group)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("CALL")) {
+			Notification obj = (Notification)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("JSCH")) {
+			Schedule obj = (Schedule)object;
+			if(obj.header().isActive()){return true;}
+			if(!obj.header().isActive()){return false;}
+		}
+		
+		if(object.getType().startsWith("EVNT")) {
+			try {
+				ConsoleEvent obj = (ConsoleEvent)object;
+				if(obj.header().isActive()){return true;}
+				if(!obj.header().isActive()){return false;}
+			}catch (ClassCastException e0) {
+				try {
+					DatabaseEvent obj = (DatabaseEvent)object;
+					if(obj.header().isActive()){return true;}
+					if(!obj.header().isActive()){return false;}
+				}catch (ClassCastException e1) {
+					try {
+							TimeEvent obj = (TimeEvent)object;
+							if(obj.header().isActive()){return true;}
+							if(!obj.header().isActive()){return false;}
+						}catch(ClassCastException e2) {
+							FileEvent obj = (FileEvent)object;
+							if(obj.header().isActive()){return true;}
+							if(!obj.header().isActive()){return false;}
+						}
+				}
+			}
+		}
+		System.out.println(Utils.getErrorString("Could not find type of Object: ["+object.getName()+"|"+object.getType()+"]"));
+		return false;
 	}
 
 }
